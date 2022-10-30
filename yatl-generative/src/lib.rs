@@ -1,3 +1,5 @@
+#![doc = include_str!("../README.md")]
+
 extern crate yatl_common;
 extern crate quote;
 

@@ -1,3 +1,5 @@
+#![doc = include_str!("../README.md")]
+
 extern crate yatl_parser;
 extern crate yatl_generative;
 extern crate proc_macro;
