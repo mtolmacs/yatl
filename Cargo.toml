@@ -1,13 +1,26 @@
 [package]
+version = "0.0.1"
 name = "yatl"
-version = "0.1.0"
+description = "A simple parser for byte range data"
+repository = "https://github.com/mtolmacs/yatl"
+readme = "README.md"
+documentation = "https://docs.rs/yatl/latest/yatl/"
+authors = ["Mark Tolmacs"]
+exclude = []
+license = "MIT OR Apache-2.0"
+keywords = ["parser"]
+categories = ["development-tools", "parser"]
+homepage = "https://github.com/mtolmacs/yatl"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+
+[workspace]
+members = ["yatl-common", "yatl-core", "yatl-parser", "yatl-generative"]
 
 [dependencies]
-proc-macro2 = "1.0.47"
-quote = "1.0.21"
+yatl-core = { path = "yatl-core" }
 
-[lib]
-proc-macro = true
+[features]
+default = ["generative"]
+generative = []

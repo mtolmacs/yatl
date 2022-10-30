@@ -1,4 +1,4 @@
-use yatl::{generative};
+use yatl::generative;
 
 #[test]
 fn it_works() {

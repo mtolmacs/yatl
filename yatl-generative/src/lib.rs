@@ -1,8 +1,7 @@
-use super::grammar::{
-  Error,
-  TokenId,
-  Token,
-};
+extern crate yatl_common;
+extern crate quote;
+
+use yatl_common::grammar::{Error, TokenId, Token};
 use quote::{quote, quote_spanned};
 
 
@@ -14,7 +13,7 @@ enum State {
   Rule,
 }
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 struct Tokens {
   data: Vec<Token>,
 }
@@ -93,7 +92,6 @@ fn parse(input: proc_macro2::TokenStream) -> Result<(Tokens, Rules), Error> {
       },
 
       // Break out the rulesets into rules
-
       proc_macro2::TokenTree::Punct(ch) if ch.as_char() == '|' => {
         if let Some(id) = identifier {
           rules.push(rule.unwrap());
@@ -122,25 +120,22 @@ fn parse(input: proc_macro2::TokenStream) -> Result<(Tokens, Rules), Error> {
         }
       },
       proc_macro2::TokenTree::Literal(ll) => {
-        let quoted_literal = ll.to_string();
-        let literal;
-        if quoted_literal.starts_with('"') {
-          // String
-          literal = quoted_literal[1..quoted_literal.len() - 1].as_bytes().to_vec();
-        } else {
-          println!("{:#?}", quoted_literal);
-          if let Ok(b) = quoted_literal.parse::<u8>() {
-            literal = vec![b];
-          } else {
+        let literal = match (
+          ll.to_string().as_bytes(),
+          ll.to_string().parse::<u8>(),
+        ) {
+          (_, Ok(byte)) => vec![byte], // If byte literal is given, use raw byte
+          ([b'"', content @ .., b'"'], _) => content.to_vec(), // If quoted on both both sides, it's a string
+          _ => {
             return Err(Error {
               token: tt.clone(),
               msg: format!("Expected a string literal or a raw byte code. Got {}", tt.to_string()),
             });
-          }
-        }
-        let token_id = tokens.get_or_add_id(Token::Literal(literal));
+          },
+        };
+        
         if let Some(target) = rule.as_mut() {
-          target.definition.push(token_id);
+          target.definition.push(tokens.get_or_add_id(Token::Literal(literal)));
           state = State::Rule;
         } else {
           return Err(Error {
@@ -219,6 +214,8 @@ fn parse(input: proc_macro2::TokenStream) -> Result<(Tokens, Rules), Error> {
 pub fn generative(input: proc_macro2::TokenStream) -> proc_macro2::TokenStream {
   match parse(input) {
     Ok((tokens, rules)) => {
+      println!("{:#?}", tokens);
+      println!("{:#?}", rules);
       //tokens: [#(#toks),*],
       quote! {
         
