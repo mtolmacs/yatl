@@ -19,7 +19,11 @@ edition = "2021"
 members = ["yatl-common", "yatl-core", "yatl-parser", "yatl-generative"]
 
 [dependencies]
+proc-macro-error = "1.0.4"
 yatl-core = { path = "yatl-core" }
+
+[dev-dependencies]
+trybuild = "1.0.71"
 
 [features]
 default = ["generative"]
