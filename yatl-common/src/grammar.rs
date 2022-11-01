@@ -31,5 +31,5 @@ pub enum LookupTable<'a, T> {
 /// through the links of [LookupTable] elements until it decodes
 /// a [Token], which rolls up to an expression etc.
 pub struct Grammar<'a, T> {
-  _root: LookupTable<'a, T>,
+  root: LookupTable<'a, T>,
 }

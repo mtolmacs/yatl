@@ -220,7 +220,7 @@ pub fn generative(input: proc_macro2::TokenStream) -> proc_macro2::TokenStream {
       println!("{:#?}", rules);
       //tokens: [#(#toks),*],
       quote! {
-        
+        Vec::<u8>::new()
       }
     },
     Err(e) => {

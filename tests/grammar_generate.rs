@@ -1,8 +1,46 @@
 use yatl::generative;
 
+// Only context-free grammar!
+// Cannot be left-recursive?
+	// Resolving left-recursion: https://en.wikipedia.org/wiki/Left_recursion
+// All rules has to have a non-recursive arm?
+
+// 0 => 'f'
+// ..
+// 45 => '('
+//     		|-> ALGEBRAIC
+// ..
+// 49 => '+'
+// 50 => '-'
+// ..
+// 57 => ')'
+// ..
+// 255 => 'k'
+// 256 => ALGEBRAIC
+//      		|-> 45
+// 			      |-> 256
+// 				        |-> 57
+//             |-> 260
+//               |-> 256
+//                 |-> 57
+//           |-> 49
+//             |-> 260
+//               |-> 256
+//                 |-> 57
+// 257 => NUMBER
+// 258 => HEX
+// 259 => WS
+// 		|-> 78
+// 		|-> 79
+// 260 => WS+
+// 		|-> 259
+// 			|-> 260
+// 			|-> 1..77,80..259 (anything other than WS and WS+, i.e. !WS and !WS+)
+
+
 #[test]
-fn it_works() {
-  generative! {
+fn generative_can_parse() {
+  let grammar = generative! {
     ALGEBRAIC -> "(" ALGEBRAIC ")"
                | "(" WS+ ALGEBRAIC ")"
                | "(" ALGEBRAIC WS+ ")"
@@ -47,4 +85,6 @@ fn it_works() {
     Err(s) => println!("ERROR: {}", s),
     Ok(x) => println!("{:#?}", x),
   };*/
+
+
 }
